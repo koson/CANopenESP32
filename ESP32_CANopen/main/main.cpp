@@ -5,9 +5,9 @@
  * @brief Main
  * @version 0.1
  * @date 2020-07-24
- * 
+ *
  * @copyright Copyright (c) 2020
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -55,11 +55,11 @@ uint8_t counter = 0;
 
 volatile uint32_t coInterruptCounter = 0U; /* variable increments each millisecond */
 
-//Timer Interrupt Configuration
+// Timer Interrupt Configuration
 static void coMainTask(void *arg);
 
 esp_timer_create_args_t coMainTaskArgs;
-//Timer Handle
+// Timer Handle
 esp_timer_handle_t periodicTimer;
 
 void mainTask(void *pvParameter)
@@ -94,16 +94,16 @@ void mainTask(void *pvParameter)
 
     /*Set Operating Mode of Slaves to Operational*/
     CO_sendNMTcommand(CO, 0x01, NODE_ID_MOTOR0);
-    //CO_sendNMTcommand(CO, 0x01, NODE_ID_MOTOR1);
-    //CO_sendNMTcommand(CO, 0x01, NODE_ID_GYRO);
-    //CO_sendNMTcommand(CO, 0x01, NODE_ID_HATOX);
+    // CO_sendNMTcommand(CO, 0x01, NODE_ID_MOTOR1);
+    // CO_sendNMTcommand(CO, 0x01, NODE_ID_GYRO);
+    // CO_sendNMTcommand(CO, 0x01, NODE_ID_HATOX);
 
     /* Initialise system components */
     motor0.init(CO, NODE_ID_MOTOR0, 2);
     hg_gyro.init(CO);
 
     /* application init code goes here. */
-    //rosserialSetup();
+    // rosserialSetup();
 
     while (reset == CO_RESET_NOT)
     {
@@ -147,17 +147,17 @@ void mainTask(void *pvParameter)
         counter++;
       }
 
-      //ROS Publish Messages
-      //rosserialPublish();
-      //ROS Handle Messages
-      //NodeHandleSpin();
+      // ROS Publish Messages
+      // rosserialPublish();
+      // ROS Handle Messages
+      // NodeHandleSpin();
 
       /* Wait */
       vTaskDelay(MAIN_WAIT / portTICK_PERIOD_MS);
     }
   }
   /* program exit
-     * ***************************************************************/
+   * ***************************************************************/
   /* reset */
   esp_restart();
 }
@@ -181,11 +181,8 @@ static void coMainTask(void *arg)
     CO_process_TPDO(CO, syncWas, CO_MAIN_TASK_INTERVAL);
   }
 }
-
-extern "C"
+ 
+extern "C" void app_main()
 {
-  void app_main()
-  {
-    xTaskCreate(&mainTask, "mainTask", 4096, NULL, 5, NULL);
-  }
-}
+  xTaskCreate(&mainTask, "mainTask", 4096, NULL, 5, NULL);
+} 
